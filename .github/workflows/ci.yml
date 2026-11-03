@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore tests/FileGuard.Tests
+
+      - name: Build
+        run: dotnet build tests/FileGuard.Tests --no-restore -c Release
+
+      - name: Test
+        run: dotnet test tests/FileGuard.Tests --no-build -c Release --verbosity normal
